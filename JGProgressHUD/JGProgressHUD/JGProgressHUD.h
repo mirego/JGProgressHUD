@@ -106,10 +106,23 @@ typedef NS_ENUM(NSUInteger, JGProgressHUDInteractionType) {
 - (instancetype)initWithStyle:(JGProgressHUDStyle)style;
 
 /**
+ @param style The appearance style of the HUD.
+ @param useEffects Whether the iOS effects should be used.
+ */
+- (instancetype)initWithStyle:(JGProgressHUDStyle)style useEffects:(BOOL)useEffects;
+
+/**
  Convenience method to initialize a new HUD.
  @param style The appearance style of the HUD.
  */
 + (instancetype)progressHUDWithStyle:(JGProgressHUDStyle)style;
+
+/**
+ Convenience method to initialize a new HUD.
+ @param style The appearance style of the HUD.
+ @param useEffects Whether the iOS effects should be used.
+ */
++ (instancetype)progressHUDWithStyle:(JGProgressHUDStyle)style useEffects:(BOOL)useEffects;
 
 /**
  The view in which the HUD is presented.
@@ -178,6 +191,13 @@ typedef NS_ENUM(NSUInteger, JGProgressHUDInteractionType) {
  @b Default: JGProgressHUDStyleExtraLight.
  */
 @property (nonatomic, assign, readonly) JGProgressHUDStyle style;
+
+/**
+ Whether the iOS effects are used
+ 
+ @b Default: YES.
+ */
+@property (nonatomic, assign, readonly) BOOL useEffects;
 
 /**
  If the HUD should always have the same width and height.

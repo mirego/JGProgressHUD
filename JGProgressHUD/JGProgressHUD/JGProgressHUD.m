@@ -101,10 +101,15 @@ static CGRect keyboardFrame = (CGRect){{0.0f, 0.0f}, {0.0f, 0.0f}};
 }
 
 - (instancetype)initWithStyle:(JGProgressHUDStyle)style {
+    return [self initWithStyle:style useEffects:YES];
+}
+
+- (instancetype)initWithStyle:(JGProgressHUDStyle)style useEffects:(BOOL)useEffects {
     self = [super initWithFrame:CGRectZero];
     
     if (self) {
         _style = style;
+        _useEffects = useEffects;
         
         self.hidden = YES;
         self.backgroundColor = [UIColor clearColor];
@@ -126,6 +131,10 @@ static CGRect keyboardFrame = (CGRect){{0.0f, 0.0f}, {0.0f, 0.0f}};
 
 + (instancetype)progressHUDWithStyle:(JGProgressHUDStyle)style {
     return [(JGProgressHUD *)[self alloc] initWithStyle:style];
+}
+
++ (instancetype)progressHUDWithStyle:(JGProgressHUDStyle)style useEffects:(BOOL)useEffects {
+    return [(JGProgressHUD *)[self alloc] initWithStyle:style useEffects:useEffects];
 }
 
 #pragma mark - Layout
@@ -315,7 +324,7 @@ static CGRect keyboardFrame = (CGRect){{0.0f, 0.0f}, {0.0f, 0.0f}};
 
 - (void)applyCornerRadius {
     self.HUDView.layer.cornerRadius = self.cornerRadius;
-    if (iOS8) {
+    if (iOS8 && self.useEffects) {
         for (UIView *sub in self.HUDView.subviews) {
             sub.layer.cornerRadius = self.cornerRadius;
         }
@@ -527,7 +536,7 @@ static CGRect keyboardFrame = (CGRect){{0.0f, 0.0f}, {0.0f, 0.0f}};
 
 - (UIView *)HUDView {
     if (!_HUDView) {
-        if (iOS8) {
+        if (iOS8 && self.useEffects) {
             UIBlurEffectStyle effect = 0;
             
             if (self.style == JGProgressHUDStyleDark) {
@@ -558,7 +567,7 @@ static CGRect keyboardFrame = (CGRect){{0.0f, 0.0f}, {0.0f, 0.0f}};
             }
         }
         
-        if (iOS7) {
+        if (iOS7 && self.useEffects) {
             UIInterpolatingMotionEffect *x = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.x" type:UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis];
             
             CGFloat maxMovement = 20.0f;
@@ -589,7 +598,7 @@ static CGRect keyboardFrame = (CGRect){{0.0f, 0.0f}, {0.0f, 0.0f}};
 }
 
 - (UIView *)contentView {
-    if (iOS8) {
+    if (iOS8 && self.useEffects) {
         return ((UIVisualEffectView *)self.HUDView).contentView;
     }
     else {
