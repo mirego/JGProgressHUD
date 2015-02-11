@@ -195,7 +195,11 @@ static CGRect keyboardFrame = (CGRect){{0.0f, 0.0f}, {0.0f, 0.0f}};
             break;
     }
     
-    self.HUDView.frame = frame;
+    self.HUDView.frame = JGAlignRect(frame);
+}
+
+CGRect JGAlignRect(CGRect frame) {
+    return CGRectMake(floorf(frame.origin.x), floorf(frame.origin.y), ceilf(frame.size.width), ceilf(frame.size.height));
 }
 
 - (void)updateHUDAnimated:(BOOL)animated animateIndicatorViewFrame:(BOOL)animateIndicator {
@@ -292,15 +296,15 @@ static CGRect keyboardFrame = (CGRect){{0.0f, 0.0f}, {0.0f, 0.0f}};
         [self setHUDViewFrameCenterWithSize:size];
         
         if (animateIndicator) {
-            self.indicatorView.frame = indicatorFrame;
+            self.indicatorView.frame = JGAlignRect(indicatorFrame);
         }
         
-        _textLabel.frame = labelFrame;
-        _detailTextLabel.frame = detailFrame;
+        _textLabel.frame = JGAlignRect(labelFrame);
+        _detailTextLabel.frame = JGAlignRect(detailFrame);
     };
     
     if (!animateIndicator) {
-        self.indicatorView.frame = indicatorFrame;
+        self.indicatorView.frame = JGAlignRect(indicatorFrame);
     }
     
     if (self.layoutChangeAnimationDuration > 0.0f && animated && !_transitioning) {
