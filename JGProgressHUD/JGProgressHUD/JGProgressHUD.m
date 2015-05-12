@@ -302,7 +302,7 @@ static CGRect keyboardFrame = (CGRect){{0.0f, 0.0f}, {0.0f, 0.0f}};
         [self setHUDViewFrameCenterWithSize:size];
         
         if (animateIndicator) {
-            self.indicatorView.frame = JGAlignRect(indicatorFrame);
+            self.indicatorView.frame = JGProgressHUD_CGRectIntegral(indicatorFrame);
         }
         
         _textLabel.frame = JGProgressHUD_CGRectIntegral(labelFrame);
