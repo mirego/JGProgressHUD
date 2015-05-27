@@ -368,6 +368,10 @@ static CGRect keyboardFrame = (CGRect){{0.0f, 0.0f}, {0.0f, 0.0f}};
         _dismissAfterTransitionFinished = NO;
         _dismissAfterTransitionFinishedWithAnimation = NO;
     }
+    
+    if (UIAccessibilityIsVoiceOverRunning()) {
+        UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, self);
+    }
 }
 
 - (void)showInView:(UIView *)view {
@@ -641,6 +645,7 @@ static CGRect keyboardFrame = (CGRect){{0.0f, 0.0f}, {0.0f, 0.0f}};
         _textLabel.numberOfLines = 0;
         [_textLabel addObserver:self forKeyPath:@"text" options:(NSKeyValueObservingOptions)kNilOptions context:NULL];
         [_textLabel addObserver:self forKeyPath:@"font" options:(NSKeyValueObservingOptions)kNilOptions context:NULL];
+        _textLabel.isAccessibilityElement = YES;
         
         [self.contentView addSubview:_textLabel];
     }
@@ -658,6 +663,7 @@ static CGRect keyboardFrame = (CGRect){{0.0f, 0.0f}, {0.0f, 0.0f}};
         _detailTextLabel.numberOfLines = 0;
         [_detailTextLabel addObserver:self forKeyPath:@"text" options:(NSKeyValueObservingOptions)kNilOptions context:NULL];
         [_detailTextLabel addObserver:self forKeyPath:@"font" options:(NSKeyValueObservingOptions)kNilOptions context:NULL];
+        _detailTextLabel.isAccessibilityElement = YES;
         
         [self.contentView addSubview:_detailTextLabel];
     }
