@@ -77,6 +77,9 @@
  */
 + (instancetype)progressHUDWithStyle:(JGProgressHUDStyle)style;
 
+
+
+
 /**
  Convenience method to initialize a new HUD.
  @param style The appearance style of the HUD.
@@ -230,7 +233,6 @@
  */
 - (void)setProgress:(float)progress animated:(BOOL)animated;
 
-
 /**
  Specifies a minimum time that the HUD will be on-screen. Useful to prevent the HUD from flashing quickly on the screen when indeterminate tasks complete more quickly than expected.
  
@@ -239,11 +241,6 @@
 @property (nonatomic, assign) NSTimeInterval minimumDisplayTime;
 
 
-
-
-////////////////
-// Presenting //
-////////////////
 
 
 /**
@@ -277,11 +274,6 @@
 
 
 
-////////////////
-// Dismissing //
-////////////////
-
-
 /**
  Dismisses the HUD animated.
  */
@@ -306,8 +298,8 @@
  */
 - (void)dismissAfterDelay:(NSTimeInterval)delay animated:(BOOL)animated;
 
-
 @end
+
 
 
 
@@ -318,7 +310,6 @@
  @return All visible progress HUDs in the view.
  */
 + (NSArray *)allProgressHUDsInView:(UIView *)view;
-
 
 /**
  @param view The view to return all visible progress HUDs for.

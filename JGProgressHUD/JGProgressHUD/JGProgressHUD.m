@@ -427,7 +427,7 @@ static CGRect keyboardFrame = (CGRect){{0.0f, 0.0f}, {0.0f, 0.0f}};
     }
 }
 
-#pragma mark - Hiding
+#pragma mark - Dismissing
 
 - (void)cleanUpAfterDismissal {
     self.hidden = YES;
@@ -822,11 +822,12 @@ static CGRect keyboardFrame = (CGRect){{0.0f, 0.0f}, {0.0f, 0.0f}};
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardDidChangeFrameNotification object:nil];
 }
 
-
 @end
 
-@implementation JGProgressHUD (HUDManagement)
 
+
+
+@implementation JGProgressHUD (HUDManagement)
 
 + (NSArray *)allProgressHUDsInView:(UIView *)view {
     NSMutableArray *HUDs = [NSMutableArray array];
@@ -839,7 +840,6 @@ static CGRect keyboardFrame = (CGRect){{0.0f, 0.0f}, {0.0f, 0.0f}};
     
     return HUDs.copy;
 }
-
 
 + (NSMutableArray *)_allProgressHUDsInViewHierarchy:(UIView *)view {
     NSMutableArray *HUDs = [NSMutableArray array];
