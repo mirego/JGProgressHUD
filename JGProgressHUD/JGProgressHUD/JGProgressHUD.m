@@ -19,22 +19,6 @@
 #define iPad (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
 #endif
 
-#ifndef NSFoundationVersionNumber_iOS_7_0
-#define NSFoundationVersionNumber_iOS_7_0 1047.20
-#endif
-
-#ifndef NSFoundationVersionNumber_iOS_8_0
-#define NSFoundationVersionNumber_iOS_8_0 1134.10
-#endif
-
-#ifndef iOS7
-#define iOS7 (NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_7_0)
-#endif
-
-#ifndef iOS8
-#define iOS8 (NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_8_0)
-#endif
-
 NS_INLINE CGRect JGProgressHUD_CGRectIntegral(CGRect rect) {
     CGFloat scale = [[UIScreen mainScreen] scale];
     
@@ -231,7 +215,7 @@ static CGRect keyboardFrame = (CGRect){{0.0f, 0.0f}, {0.0f, 0.0f}};
     CGRect detailFrame = CGRectZero;
     
     if (_textLabel) {
-        if (iOS7) {
+        if (@available(iOS 7.0, *)) {
             NSDictionary *attributes = @{NSFontAttributeName : self.textLabel.font};
             labelFrame.size = [self.textLabel.text boundingRectWithSize:maxContentSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attributes context:nil].size;
         }
@@ -250,7 +234,7 @@ static CGRect keyboardFrame = (CGRect){{0.0f, 0.0f}, {0.0f, 0.0f}};
     }
     
     if (_detailTextLabel) {
-        if (iOS7) {
+        if (@available(iOS 7.0, *)) {
             NSDictionary *attributes = @{NSFontAttributeName : self.detailTextLabel.font};
             detailFrame.size = [self.detailTextLabel.text boundingRectWithSize:maxContentSize options:NSStringDrawingUsesLineFragmentOrigin attributes:attributes context:nil].size;
         }
@@ -305,8 +289,8 @@ static CGRect keyboardFrame = (CGRect){{0.0f, 0.0f}, {0.0f, 0.0f}};
             self.indicatorView.frame = JGProgressHUD_CGRectIntegral(indicatorFrame);
         }
         
-        _textLabel.frame = JGProgressHUD_CGRectIntegral(labelFrame);
-        _detailTextLabel.frame = JGProgressHUD_CGRectIntegral(detailFrame);
+        self->_textLabel.frame = JGProgressHUD_CGRectIntegral(labelFrame);
+        self->_detailTextLabel.frame = JGProgressHUD_CGRectIntegral(detailFrame);
     };
     
     if (!animateIndicator) {
@@ -334,11 +318,13 @@ static CGRect keyboardFrame = (CGRect){{0.0f, 0.0f}, {0.0f, 0.0f}};
 
 - (void)applyCornerRadius {
     self.HUDView.layer.cornerRadius = self.cornerRadius;
-    if (iOS8 && self.useEffects) {
-        for (UIView *sub in self.HUDView.subviews) {
-            sub.layer.cornerRadius = self.cornerRadius;
+    if (@available(iOS 8.0, *)) {
+        if (self.useEffects) {
+            for (UIView *sub in self.HUDView.subviews) {
+                sub.layer.cornerRadius = self.cornerRadius;
+            }
         }
-    };
+    }
 }
 
 #pragma mark - Showing
@@ -565,24 +551,29 @@ static CGRect keyboardFrame = (CGRect){{0.0f, 0.0f}, {0.0f, 0.0f}};
 
 - (UIView *)HUDView {
     if (!_HUDView) {
-        if (iOS8 && self.useEffects) {
-            UIBlurEffectStyle effect = 0;
-            
-            if (self.style == JGProgressHUDStyleDark) {
-                effect = UIBlurEffectStyleDark;
+        BOOL usediOS8Effects = NO;
+        if (@available(iOS 8.0, *)) {
+            if (self.useEffects) {
+                usediOS8Effects = YES;
+                UIBlurEffectStyle effect = 0;
+                
+                if (self.style == JGProgressHUDStyleDark) {
+                    effect = UIBlurEffectStyleDark;
+                }
+                else if (self.style == JGProgressHUDStyleLight) {
+                    effect = UIBlurEffectStyleLight;
+                }
+                else {
+                    effect = UIBlurEffectStyleExtraLight;
+                }
+                
+                UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:effect];
+                
+                _HUDView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
             }
-            else if (self.style == JGProgressHUDStyleLight) {
-                effect = UIBlurEffectStyleLight;
-            }
-            else {
-                effect = UIBlurEffectStyleExtraLight;
-            }
-            
-            UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:effect];
-            
-            _HUDView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
         }
-        else {
+        
+        if (!usediOS8Effects) {
             _HUDView = [[UIView alloc] init];
             
             if (self.style == JGProgressHUDStyleDark) {
@@ -596,20 +587,22 @@ static CGRect keyboardFrame = (CGRect){{0.0f, 0.0f}, {0.0f, 0.0f}};
             }
         }
         
-        if (iOS7 && self.useEffects) {
-            UIInterpolatingMotionEffect *x = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.x" type:UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis];
-            
-            CGFloat maxMovement = 20.0f;
-            
-            x.minimumRelativeValue = @(-maxMovement);
-            x.maximumRelativeValue = @(maxMovement);
-            
-            UIInterpolatingMotionEffect *y = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.y" type:UIInterpolatingMotionEffectTypeTiltAlongVerticalAxis];
-            
-            y.minimumRelativeValue = @(-maxMovement);
-            y.maximumRelativeValue = @(maxMovement);
-            
-            _HUDView.motionEffects = @[x, y];
+        if (@available(iOS 7.0, *)) {
+            if (self.useEffects) {
+                UIInterpolatingMotionEffect *x = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.x" type:UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis];
+                
+                CGFloat maxMovement = 20.0f;
+                
+                x.minimumRelativeValue = @(-maxMovement);
+                x.maximumRelativeValue = @(maxMovement);
+                
+                UIInterpolatingMotionEffect *y = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.y" type:UIInterpolatingMotionEffectTypeTiltAlongVerticalAxis];
+                
+                y.minimumRelativeValue = @(-maxMovement);
+                y.maximumRelativeValue = @(maxMovement);
+                
+                _HUDView.motionEffects = @[x, y];
+            }
         }
         
         [self applyCornerRadius];
@@ -627,12 +620,13 @@ static CGRect keyboardFrame = (CGRect){{0.0f, 0.0f}, {0.0f, 0.0f}};
 }
 
 - (UIView *)contentView {
-    if (iOS8 && self.useEffects) {
-        return ((UIVisualEffectView *)self.HUDView).contentView;
+    if (@available(iOS 8.0, *)) {
+        if (self.useEffects) {
+            return ((UIVisualEffectView *)self.HUDView).contentView;
+        }
     }
-    else {
-        return self.HUDView;
-    }
+    
+    return self.HUDView;
 }
 
 - (UILabel *)textLabel {
